@@ -39,7 +39,7 @@ function Completer:tick()
     if self:MoE() then
         self.next.op = self.input.nextOP
         if self.op and self.op ~= "" then
-            print(self.op)
+
             self.op:un_scoreboard(self.scoreboard)
         end
     end

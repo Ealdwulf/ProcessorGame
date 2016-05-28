@@ -41,7 +41,7 @@ function Scoreboard:update(dt)
 end
 
 function Scoreboard:alloc(reg, value)
-    print("a:",reg,value)
+
     if self.board[reg] then
         print("Error: already scoreboarded",reg)
     end
@@ -50,7 +50,7 @@ function Scoreboard:alloc(reg, value)
     
 end
 function Scoreboard:clear(reg)
-    print("c",reg)
+
     if not self.board[reg] then
         print("Error: not scoreboarded",reg)
     end

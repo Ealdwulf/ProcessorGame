@@ -51,7 +51,6 @@ end
 function GameStates:controls(key, what)
     if self.state == self.STATE_INGAME then
         if key == 'escape' and what == 'keyReleased' then
-            print(key)
             love.quit() -- why isn't this working?
         end
         self.gameManager:controls(key, what)
