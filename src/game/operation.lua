@@ -23,13 +23,23 @@ function Operation:draw(x, y )
     love.graphics.draw(self.text, x, y)
 end
 
-function Operation:scoreboard(sc)
+function Operation:check(sc)
+
+    local okay = true
     for i = 1, #self.r, 2 do
+        okay = okay and sc:check(self.r[i], self.r[i+1], self.op)
+    end
+    return okay
+end
+
+function Operation:scoreboard(sc)
+
+    for i = 1, #self.w, 2 do
         sc:alloc(self.w[i], self.w[i+1])
     end
 end
 function Operation:un_scoreboard(sc)
-    for i = 1, #self.r, 2 do
+    for i = 1, #self.w, 2 do
         sc:clear(self.w[i])
     end
 end

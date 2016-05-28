@@ -5,6 +5,7 @@ Copyright (C) 2016 Alex Burr.
 License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPLv2
 
 ]]--
+local Sounds = require "src.system.sounds"
 local Layout = require 'system.layout'
 local Machine = require 'game.machine'
 
@@ -31,6 +32,7 @@ end
 function Issue:load()
     self.currOP = self.disassemblyView:next()
     self.stalled = false
+    self.bad = false
 end
 
 function Issue:update(dt)
@@ -46,8 +48,10 @@ function Issue:tick()
             if pipe:MoE() and not waiting then
                 pipe:setNextOp(self.currOP)
                 if self.currOP then
-                    print("here")
                     self.currOP:scoreboard(self.scb)
+                    if not self.currOP:check(self.scb) then
+                        Sounds.play("bad")
+                    end
                 end
                 self.stalled = false
                 self.next.currOP = self.disassemblyView:next()
@@ -58,6 +62,11 @@ function Issue:tick()
         else
             pipe:setNextOp("")
         end
+    end
+    if self.stalled then
+        Sounds.play("stall")
+    else
+        Sounds.play("issue")
     end
 end
 

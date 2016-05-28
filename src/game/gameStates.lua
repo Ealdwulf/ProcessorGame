@@ -6,6 +6,7 @@ License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPLv2
 
 ]]--
 local GameManager = require "game.gameManager"
+local Sounds = require "src.system.sounds"
 
 local love = love
 local GameStates ={}
@@ -25,6 +26,7 @@ end
 
 function GameStates:load(_)
     self.gameManager:load()
+    Sounds.load()
 end
 
 function GameStates:update(dt)

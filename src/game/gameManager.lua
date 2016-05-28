@@ -6,6 +6,7 @@ License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPLv2
 
 ]]--
 
+local Sounds = require "src.system.sounds"
 local DisassemblyView = require "game.disassemblyView"
 local Instructions = require "game.instructions"
 local Issue = require "game.issue"
@@ -28,6 +29,7 @@ function GameManager.create()
     self.code = Instructions.getAll()
     self.tickTime = 1.0
     self.accumTime = 0
+    self.tickNext = true
 
     self.completer_a = Completer.create("cA",self.scoreboard)
     self.completer_m = Completer.create("cM",self.scoreboard)
@@ -72,7 +74,6 @@ function GameManager.create()
 end
 
 function GameManager:load(_)
-    print('gm.l',self.code)
     self.disassemblyView:load(self.code)
     self.issue:load()
 end
@@ -81,10 +82,16 @@ function GameManager:update(dt)
     self.disassemblyView:update(dt)
     self.issue:update(dt)
     self.accumTime = self.accumTime + dt
-    if self.accumTime > self.tickTime then
-        self:tick()
-        self:tock()
-        self.accumTime = 0
+    if self.accumTime > self.tickTime*0.5 then
+        if self.tickNext then
+            Sounds.play("tick")
+            self:tick()
+        else
+            Sounds.play("tock")
+            self:tock()
+        end
+        self.tickNext = not self.tickNext
+        self.accumTime = 0        
     end
 end
 function GameManager:tick()

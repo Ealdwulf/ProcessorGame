@@ -20,10 +20,14 @@ function Scoreboard.create()
 
     self.board = {}
     self.next.board = {}
+    self.regs = {}
+    self.next.regs = {}
     self.text = {}
     for i = 0, 16 do
-        self.board[i] = nil
-        self.next.board[i] = nil
+        self.board[i] = false
+        self.next.board[i] = false
+        self.regs[i] = "a"
+        self.next.regs[i] = "a"
         self.text[i] = g.newText(Layout.font, "r"..i)
     end
 
@@ -41,19 +45,27 @@ function Scoreboard:alloc(reg, value)
     if self.board[reg] then
         print("Error: already scoreboarded",reg)
     end
-    self.next.board[reg] = value
+    self.next.board[reg] = true
+    self.next.regs[reg] = value
+    
 end
 function Scoreboard:clear(reg)
     print("c",reg)
     if not self.board[reg] then
         print("Error: not scoreboarded",reg)
     end
-    self.next.board[reg] = nil
+    self.next.board[reg] = false
 end
 function Scoreboard:lookup(reg)
     return self.board[reg]
 end
-
+function Scoreboard:check(reg, value, op)
+    local okay =  self.regs[reg]==value
+    if not okay then
+        print("Op ",op," expected ", value, " got ",self.regs[value]," in reg ",reg)
+    end
+    return okay
+end
 function Scoreboard:draw()
     local ly = Layout.scoreboard
     for i = 0, 16 do
