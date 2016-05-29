@@ -18,6 +18,7 @@ function Completer.create(id, scoreboard)
     local self = setmetatable(Machine.create(), Completer)
     self.next = {}
     self.input = {}
+    self.next.input = {}
     self.id = id
     self.scoreboard = scoreboard
     
@@ -28,7 +29,7 @@ function Completer:load()
 end
 
 function Completer:setNextOp(op)
-    self.input.nextOP = op
+    self.next.input.op = op
 end
 
 function Completer:MoE()
@@ -37,17 +38,22 @@ end
 
 function Completer:tick()
     if self:MoE() then
-        self.next.op = self.input.nextOP
-        if self.op and self.op ~= "" then
+        if self.input.op and self.input.op ~= "" then
 
-            self.op:un_scoreboard(self.scoreboard)
+            self.input.op:un_scoreboard(self.scoreboard)
         end
     end
 end
 
-
 function Completer:draw()
+    local ly = Layout.stage
+    g.setColor(ly.colour)
+    g.rectangle("fill",ly[self.id].x, ly[self.id].y, ly.width, ly.height)
+    if self.input.op ~= "" and self.input.op then
+        self.input.op:draw(ly[self.id].x, ly[self.id].y)
+    end
     
 end
+
 
 return Completer

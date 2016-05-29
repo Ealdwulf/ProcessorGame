@@ -28,6 +28,7 @@ function Stage.create(id, nextStage)
     local self = setmetatable(Machine.create(), Stage)
     self.next = {}
     self.input = {}
+    self.next.input = {}
     self.id = id
     self.nextStage = nextStage
     self.moe = nil
@@ -35,19 +36,6 @@ function Stage.create(id, nextStage)
 end
 
 function Stage:load()
-    self.op = ""
-end
-
-function Stage:setNextOp(op)
-    dprint("setnext",self.id )
-    self.input.nextOP = op
-end
-
-function Stage:MoE()
-    if self.moe == nil then
-        self.moe = self.op == "" or self.nextStage:MoE()
-    end
-    return self.moe
 end
 local function opstr(op)
     if op == "" then return ""
@@ -55,11 +43,21 @@ local function opstr(op)
     else return op.op.." "..op.txt
     end
 end
+function Stage:setNextOp(op)
+    self.next.input.op = op
+end
+
+function Stage:MoE()
+    if self.moe == nil then
+        self.moe = self.input.op == "" or self.nextStage:MoE()
+    end
+    return self.moe
+end
+
 function Stage:tick()
-    dprint(self.id, self:MoE(), opstr(self.op), opstr(self.next.op), opstr(self.input.nextOP))
+    dprint(ticks, self.id, self:MoE(), opstr(self.input.op), opstr(self.next.op), opstr(self.input.op))
     if self:MoE() then
-        self.next.op = self.input.nextOP
-        self.nextStage:setNextOp(self.input.nextOP)
+        self.nextStage:setNextOp(self.input.op)
     end
 end
 
@@ -72,8 +70,8 @@ function Stage:draw()
         g.setColor(ly.colour)
     end
     g.rectangle("fill",ly[self.id].x, ly[self.id].y, ly.width, ly.height)
-    if self.op ~= "" and self.op then
-        self.op:draw(ly[self.id].x, ly[self.id].y)
+    if self.input.op ~= "" and self.input.op then
+        self.input.op:draw(ly[self.id].x, ly[self.id].y)
     end
     
 end

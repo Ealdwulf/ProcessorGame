@@ -42,6 +42,7 @@ end
 function Machine:tock()
     dprint(Tserial.pack(self, ignore))
     for k, _ in pairs(self.next) do
+        
         self:tockcp(self,self.next,k)
     end
     

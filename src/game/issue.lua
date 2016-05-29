@@ -15,6 +15,17 @@ setmetatable(Issue, {__index = Machine})
 
 local g = love.graphics
 
+local debug = false
+local dprint
+local function nprint()
+end
+if debug then
+    dprint = print
+else
+    dprint = nprint
+end
+
+
 function Issue.create(disassemblyView, scb, arith, ldst, mac)
     local self = setmetatable(Machine.create(), Issue)
     self.disassemblyView = disassemblyView
@@ -42,10 +53,11 @@ function Issue:tick()
     local waiting = self.currOP:mustWait(self.scb)
     local currPipe = self.currOP:getPipe()
     for pipeType, pipe in pairs(self.pipes) do
-        --print(pipeType, currPipe)
+        dprint(pipeType, currPipe)
         if pipeType == currPipe then
-            --print(pipeType, pipe:MoE(), waiting)
+            dprint(pipeType, pipe:MoE(), waiting)
             if pipe:MoE() and not waiting then
+                dprint(ticks, pipeType, self.currOP.op)
                 pipe:setNextOp(self.currOP)
                 if self.currOP then
                     self.currOP:scoreboard(self.scb)
