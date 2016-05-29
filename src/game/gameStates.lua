@@ -16,7 +16,7 @@ GameStates.__index = GameStates
 
 function GameStates.create()
     local self = setmetatable({}, GameStates)
-    self.gameManager = GameManager.create()
+    self.gameManager = GameManager.create(gameStates)
     self.STATE_INGAME = 1
     self.STATE_WIN_LOSE = 2
     self.state = self.STATE_INGAME
@@ -36,9 +36,7 @@ function GameStates:update(dt)
 end
 
 function GameStates:draw()
-    if self.state == self.STATE_INGAME then
-        self.gameManager:draw()
-    end
+    self.gameManager:draw()
 end
 
 

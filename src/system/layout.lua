@@ -19,7 +19,7 @@ local RED = {256, 0, 0}
 
 local YELLOW = {256, 256, 0}
 Layout.assemblyView  = {
-    colour = RED_MID,
+    colour =  RED_MID,
     
     instBackgroundColour = GREEN_MID,
     PCColour = GREEN_6,
@@ -76,6 +76,27 @@ Layout.stage = {
     mac8 = {x=500, y=380},
     
 }
+Layout.score = {
+    x = 550,
+    y = 30,
+    width = 80,
+    height = 20,
+    colour = GREEN_MID,
+    text = {
+        x = 500,
+        y = 30,
+    },
+    stall = {
+        colour = RED_MID,
+        x = 700,
+        y = 60,
+        width = 20,
+        height = 100,
+
+    }
+}
+    
+
 Layout.textColour = BLACK
 Layout.font = love.graphics.newFont(16)
     

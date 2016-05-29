@@ -12,6 +12,7 @@ local BlockManager = require "game.blockManager"
 local Instructions = require "game.instructions"
 local Issue = require "game.issue"
 local Stage = require "game.stage"
+local Score = require "game.score"
 local Completer = require "game.completer"
 local Scoreboard = require "game.scoreboard"
 ticks = 0 
@@ -19,6 +20,7 @@ local love = love
 local GameManager ={}
 GameManager.__index = GameManager
 
+local MAX_STALLS_LEVEL = 30
 
 -- local variables
 
@@ -26,6 +28,7 @@ function GameManager.create()
     local self = setmetatable({}, GameManager)
     local blocks = {}
     self.blockManager = BlockManager.create(blocks)
+    self.score = Score.create(MAX_STALLS_LEVEL)
 
     self.scoreboard = Scoreboard.create()
     self.disassemblyView = DisassemblyView.create()
@@ -60,21 +63,25 @@ function GameManager:load(_)
     self.blocks.issue:load()
 end
 
-function GameManager:update(dt)    
+function GameManager:update(dt)
     self.disassemblyView:update(dt)
-    self.blocks.issue:update(dt)
     self.accumTime = self.accumTime + dt
     if self.accumTime > self.tickTime*0.5 then
         if self.tickNext then
             Sounds.play("tick")
             self:tick()
+            local stall = self.blocks.issue:update(dt)
+            self.score:update(stall)
+            
         else
             Sounds.play("tock")
             self:tock()
         end
         self.tickNext = not self.tickNext
-        self.accumTime = 0        
+        self.accumTime = 0
+        
     end
+    
 end
 function GameManager:tick()
     ticks = ticks + 1
@@ -90,6 +97,7 @@ function GameManager:draw()
     self.disassemblyView:draw()
     self.blockManager:draw()
     self.scoreboard:draw()
+    self.score:draw()
 end
 
 

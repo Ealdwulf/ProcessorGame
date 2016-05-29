@@ -47,6 +47,7 @@ function Issue:load()
 end
 
 function Issue:update(dt)
+    return self.stalled
 end
 
 function Issue:tick()
