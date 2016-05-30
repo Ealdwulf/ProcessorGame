@@ -38,7 +38,7 @@ function Score:update(stall, pc)
         self.stallsLoop = self.stallsLoop + 1
     end
     if pc == 1 and not stall then
-        print(self.stallsLoop, self.stallsLastLoop, self.targetStalls)
+
         if self.stallsLoop <= self.targetStalls and self.stallsLastLoop <= self.targetStalls then
             return true
         end
@@ -46,7 +46,7 @@ function Score:update(stall, pc)
         self.stallsLoop = 0
     end
     self.text:set("Level "..self.level..Locale.gettext(" Points: ")..self.points.. Locale.gettext(" Stalls: ")..self.stallsLevel..Locale.gettext(" Target: ")..self.targetStalls)
-    print(self.stallsLevel , self.maxStalls)
+
     return false, self.stallsLevel <= self.maxStalls
 end
 function Score:endLevel(won, loseText)

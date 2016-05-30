@@ -56,7 +56,6 @@ end
 
 function GameStates:continue()
     self.state = self.STATE_INGAME
-    print("reload")
     self.gameManager:load()
     self.score:load()
 end

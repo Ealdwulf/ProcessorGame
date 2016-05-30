@@ -100,10 +100,13 @@ Layout.score = {
 Layout.message = {
     x = 100,
     y = 200,
+    
     width = 600,
     height = 200,
     colour = GREEN,
     text = {
+        maxchars = 60,
+        ysep = 20,
         colour = BLACK,
         x = 150,
         y = 250

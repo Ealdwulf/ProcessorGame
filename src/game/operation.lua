@@ -49,13 +49,15 @@ end
 function Operation:switchOkay(other)
     -- is it okay to swap this op with an adjacent one
     for i = 1, #self.w, 2 do
-        if other.reads[self.r[i]] then
-            return false, Locale.gettext("Can't move write of $1 past read by $2",self.w[i],other.string)
+
+        if other.reads[self.w[i]] then
+            return false, Locale.gettext("Can't move write of r$1 past read by $2",self.w[i],other.string)
         end
     end
-    for i = 1, #self.w, 2 do
+    for i = 1, #self.r, 2 do
+
         if other.writes[self.r[i]] then
-            return false, Locale.gettext("Can't move read of $1 past write by $2 ",self.r[i], other.string)
+            return false, Locale.gettext("Can't move read of r$1 past write by $2 ",self.r[i], other.string)
         end
     end
     if (self:isLoad() and other:isStore())
