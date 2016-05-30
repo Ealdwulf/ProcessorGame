@@ -6,30 +6,29 @@ License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPLv2
 
 ]]--
 
-local Sounds = require "src.system.sounds"
+local Sounds = require "system.sounds"
+local Locale = require "system.locale"
 local DisassemblyView = require "game.disassemblyView"
 local BlockManager = require "game.blockManager"
 local Instructions = require "game.instructions"
 local Issue = require "game.issue"
 local Stage = require "game.stage"
-local Score = require "game.score"
 local Completer = require "game.completer"
 local Scoreboard = require "game.scoreboard"
-ticks = 0 
+ticks = 0  -- global for debug purposes
 local love = love
 local GameManager ={}
 GameManager.__index = GameManager
 
-local MAX_STALLS_LEVEL = 30
-
 -- local variables
 
-function GameManager.create()
+function GameManager.create(gameStates, score)
     local self = setmetatable({}, GameManager)
     local blocks = {}
     self.blockManager = BlockManager.create(blocks)
-    self.score = Score.create(MAX_STALLS_LEVEL)
+    self.gameStates = gameStates
 
+    self.score = score
     self.scoreboard = Scoreboard.create()
     self.disassemblyView = DisassemblyView.create()
     self.code = Instructions.getAll()
@@ -60,7 +59,8 @@ end
 
 function GameManager:load(_)
     self.disassemblyView:load(self.code)
-    self.blocks.issue:load()
+    self.blockManager:load()
+    self.scoreboard:load()
 end
 
 function GameManager:update(dt)
@@ -71,7 +71,13 @@ function GameManager:update(dt)
             Sounds.play("tick")
             self:tick()
             local stall = self.blocks.issue:update(dt)
-            self.score:update(stall)
+            local okayStalls = self.score:update(stall)
+
+            if not okayStalls then
+                -- lose  due to running out of stall points
+                
+                self.gameStates:endLevel(false, Locale.gettext("The machine stalled too many times! Press enter to try again or EXC to quit"))
+            end
             
         else
             Sounds.play("tock")
@@ -102,6 +108,7 @@ end
 
 
 function GameManager:quit()
+    love.event.quit()
 end
 
 -- Input --------------------------------------------------------------------------------

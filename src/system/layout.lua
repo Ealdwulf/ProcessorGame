@@ -12,7 +12,8 @@ local RED_MID = {128, 0, 0}
 local GREEN_MID = {0, 128, 0}
 local BLUE_MID = {0, 0, 128}
 local GREEN_6 = {0, 176, 0}
-local GREEN = {0, 0, 256}
+local BLUE = {0, 0, 256}
+local GREEN = {0, 256, 0}
 local BLACK = {0, 0, 0}
 
 local RED = {256, 0, 0}
@@ -24,7 +25,7 @@ Layout.assemblyView  = {
     instBackgroundColour = GREEN_MID,
     PCColour = GREEN_6,
     cursorColour = BLUE_MID,
-    instSelectedColour = GREEN,
+    instSelectedColour = BLUE,
     x = 0,
     y = 100,
     width = 150,
@@ -95,7 +96,19 @@ Layout.score = {
 
     }
 }
-    
+
+Layout.message = {
+    x = 100,
+    y = 200,
+    width = 600,
+    height = 200,
+    colour = GREEN,
+    text = {
+        colour = BLACK,
+        x = 150,
+        y = 250
+    }
+}
 
 Layout.textColour = BLACK
 Layout.font = love.graphics.newFont(16)

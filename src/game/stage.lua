@@ -26,16 +26,16 @@ end
 
 function Stage.create(id, nextStage)
     local self = setmetatable(Machine.create(), Stage)
-    self.next = {}
-    self.input = {}
-    self.next.input = {}
     self.id = id
     self.nextStage = nextStage
-    self.moe = nil
     return self
 end
 
 function Stage:load()
+    self.next = {}
+    self.input = {}
+    self.next.input = {}
+    self.moe = nil
 end
 local function opstr(op)
     if op == "" then return ""

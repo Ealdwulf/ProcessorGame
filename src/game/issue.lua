@@ -5,7 +5,7 @@ Copyright (C) 2016 Alex Burr.
 License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPLv2
 
 ]]--
-local Sounds = require "src.system.sounds"
+local Sounds = require "system.sounds"
 local Layout = require 'system.layout'
 local Machine = require 'game.machine'
 

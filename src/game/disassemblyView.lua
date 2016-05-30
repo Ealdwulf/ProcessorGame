@@ -15,14 +15,17 @@ local MAX_CODE_LINES = 15
 
 function DisassemblyView.create()
     local self = setmetatable({}, DisassemblyView)
-    self.cursor = 1
-    self.selected = false
-    self.PC = 1
     return self
 end
 
 function DisassemblyView:load(code)
-    self.code = code
+    self.cursor = 1
+    self.selected = false
+    self.PC = 1
+    self.code = {}
+    for _, op in ipairs(code) do
+        table.insert(self.code, op)
+    end
     if #code >MAX_CODE_LINES then
         error("code scrolling not yet supported")
     end

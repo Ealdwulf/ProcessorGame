@@ -18,6 +18,11 @@ local g = love.graphics
 function Scoreboard.create()
     local self = setmetatable(Machine.create(), Scoreboard)
 
+
+    return self
+end
+
+function Scoreboard:load()
     self.board = {}
     self.next.board = {}
     self.regs = {}
@@ -30,11 +35,6 @@ function Scoreboard.create()
         self.next.regs[i] = "a"
         self.text[i] = g.newText(Layout.font, "r"..i)
     end
-
-    return self
-end
-
-function Scoreboard:load()
 end
 
 function Scoreboard:update(dt)

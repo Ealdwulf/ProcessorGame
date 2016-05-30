@@ -24,6 +24,11 @@ function BlockManager:getPath(path)
     return t
 end
 
+function BlockManager:load()
+    for _, p in pairs(self.blocks) do
+        p:load()
+    end
+end
 function BlockManager:tick()
     for _, p in pairs(self.blocks) do
         p:tick()

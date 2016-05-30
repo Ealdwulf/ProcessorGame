@@ -16,9 +16,6 @@ local g = love.graphics
 
 function Completer.create(id, scoreboard)
     local self = setmetatable(Machine.create(), Completer)
-    self.next = {}
-    self.input = {}
-    self.next.input = {}
     self.id = id
     self.scoreboard = scoreboard
     
@@ -26,6 +23,9 @@ function Completer.create(id, scoreboard)
 end
 
 function Completer:load()
+    self.next = {}
+    self.input = {}
+    self.next.input = {}
 end
 
 function Completer:setNextOp(op)
