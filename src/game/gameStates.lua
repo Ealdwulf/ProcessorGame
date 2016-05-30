@@ -9,11 +9,10 @@ local GameManager = require "game.gameManager"
 local Sounds = require "system.sounds"
 local Message = require "game.ui.message"
 local Score = require "game.score"
-
+local Levels = require "game.levels"
 local love = love
 local GameStates ={}
 GameStates.__index = GameStates
-local MAX_STALLS_LEVEL = 30
 
 
 -- local variables
@@ -22,7 +21,7 @@ function GameStates.create()
     local self = setmetatable({}, GameStates)
     self.message = Message.create(self)
     self.message:set("Press ENTER to start game, ESCAPE to quit", "continue")
-    self.score = Score.create(MAX_STALLS_LEVEL, self.message)
+    self.score = Score.create(self.message)
     self.gameManager = GameManager.create(self, self.score)
     self.STATE_START = 1
     self.STATE_INGAME = 2
@@ -33,6 +32,7 @@ function GameStates.create()
 end
 
 function GameStates:load(_)
+    self.score:load()
     self.gameManager:load()
     Sounds.load()
 end
@@ -58,6 +58,7 @@ function GameStates:continue()
     self.state = self.STATE_INGAME
     print("reload")
     self.gameManager:load()
+    self.score:load()
 end
 
 function GameStates:endLevel(won, loseText)

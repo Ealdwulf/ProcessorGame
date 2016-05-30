@@ -21,7 +21,6 @@ function DisassemblyView.create(gameStates)
     return self
 end
 
-
 function DisassemblyView:nextPC(val)
     if val  == #self.code then
         return 1
@@ -50,6 +49,12 @@ function DisassemblyView:load(code)
         error("code scrolling not yet supported")
     end
 end    
+
+function DisassemblyView:getPC()
+    return self.PC
+end
+
+
 
 function DisassemblyView:update()
 end

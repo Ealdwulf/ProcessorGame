@@ -10,7 +10,7 @@ local Sounds = require "system.sounds"
 local Locale = require "system.locale"
 local DisassemblyView = require "game.disassemblyView"
 local BlockManager = require "game.blockManager"
-local Instructions = require "game.instructions"
+local Levels = require "game.levels"
 local Issue = require "game.issue"
 local Stage = require "game.stage"
 local Completer = require "game.completer"
@@ -31,10 +31,6 @@ function GameManager.create(gameStates, score)
     self.score = score
     self.scoreboard = Scoreboard.create()
     self.disassemblyView = DisassemblyView.create(gameStates)
-    self.code = Instructions.getAll()
-    self.tickTime = 1.0
-    self.accumTime = 0
-    self.tickNext = true
 
     blocks.completer_a = Completer.create("arith1",self.scoreboard)
     blocks.completer_m = Completer.create("mac8",self.scoreboard)
@@ -58,6 +54,10 @@ function GameManager.create(gameStates, score)
 end
 
 function GameManager:load(_)
+    self.code = Levels.getInstructions(self.score.level)
+    self.tickTime = 1.0
+    self.accumTime = 0
+    self.tickNext = true
     self.disassemblyView:load(self.code)
     self.blockManager:load()
     self.scoreboard:load()
@@ -71,8 +71,12 @@ function GameManager:update(dt)
             Sounds.play("tick")
             self:tick()
             local stall = self.blocks.issue:update(dt)
-            local okayStalls = self.score:update(stall)
-
+            local pc = self.disassemblyView:getPC()
+            local finished, okayStalls = self.score:update(stall, pc)
+            if finished then
+                self.gameStates:endLevel(true)
+                return
+            end
             if not okayStalls then
                 -- lose  due to running out of stall points
                 

@@ -8,37 +8,51 @@ License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPLv2
 
 local Layout = require 'system.layout'
 local Locale = require 'system.locale'
+local Levels = require 'game.levels'
 local g = love.graphics
 
 local Score ={}
 Score.__index = Score
 
-local NUM_LEVELS = 1
 
-function Score.create(max_stalls_level, message)
+function Score.create(message, num_levels)
     local self = setmetatable({}, Score)
     self.message = message
-    self.level = 0
+    self.level = 1
     self.points = 0
     self.stallsLevel = 0
-    self.maxStalls = max_stalls_level
+    self.stallsLoop = 1000000
+    self.stallsLastLoop = 1000000
     self.text = love.graphics.newText(Layout.font, '')
 
     return self
 end
 
-function Score:update(stall)
-    print(stall)
+function Score:load()
+    self.maxStalls, self.targetStalls = Levels.getData(self.level)
+end
+function Score:update(stall, pc)
+    local won = false
     if stall then
         self.stallsLevel = self.stallsLevel + 1
+        self.stallsLoop = self.stallsLoop + 1
     end
-    self.text:set("Level "..self.level..Locale.gettext(" Points: ")..self.points.. Locale.gettext(" Stalls: ")..self.stallsLevel)
-    return self.stallsLevel <= self.maxStalls
+    if pc == 1 and not stall then
+        print(self.stallsLoop, self.stallsLastLoop, self.targetStalls)
+        if self.stallsLoop <= self.targetStalls and self.stallsLastLoop <= self.targetStalls then
+            return true
+        end
+        self.stallsLastLoop = self.stallsLoop
+        self.stallsLoop = 0
+    end
+    self.text:set("Level "..self.level..Locale.gettext(" Points: ")..self.points.. Locale.gettext(" Stalls: ")..self.stallsLevel..Locale.gettext(" Target: ")..self.targetStalls)
+    print(self.stallsLevel , self.maxStalls)
+    return false, self.stallsLevel <= self.maxStalls
 end
 function Score:endLevel(won, loseText)
     if won then
         self.points = self.maxStalls - self.stallsLevel
-        if self.level > NUM_LEVELS then            
+        if self.level >= Levels.num then            
             self.message:set(Locale.gettext("You completed all the levels! Want to play again?"),"continue")
             self.level = 1
         else
