@@ -30,7 +30,7 @@ function GameManager.create(gameStates, score)
 
     self.score = score
     self.scoreboard = Scoreboard.create()
-    self.disassemblyView = DisassemblyView.create()
+    self.disassemblyView = DisassemblyView.create(gameStates)
     self.code = Instructions.getAll()
     self.tickTime = 1.0
     self.accumTime = 0
@@ -76,7 +76,7 @@ function GameManager:update(dt)
             if not okayStalls then
                 -- lose  due to running out of stall points
                 
-                self.gameStates:endLevel(false, Locale.gettext("The machine stalled too many times! Press enter to try again or EXC to quit"))
+                self.gameStates:endLevel(false, Locale.gettext("The machine stalled too many times! Press enter to try again or ESC to quit"))
             end
             
         else

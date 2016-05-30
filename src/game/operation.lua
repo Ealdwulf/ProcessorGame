@@ -15,6 +15,9 @@ local love = love
 function Operation.create(data)
     local self = setmetatable(data, Operation) -- PLS VIOLATION - turning raw data into a class
 
+    self.loads = {LDL=1}
+    self.stores = {STL=1}
+
     self.reads = {}
     for i = 1, #self.r, 2 do
         self.reads[self.r[i]]=true
@@ -55,11 +58,29 @@ function Operation:switchOkay(other)
             return false, Locale.gettext("Can't move read of $1 past write by $2 ",self.r[i], other.string)
         end
     end
-    if self.isLoad() and other.isStore() then
-        return false, Locale.gettext("Can't tell if it's okay to move a load past a store, so I'm not going to let you!")
+    if (self:isLoad() and other:isStore())
+    or (self:isStore() and other:isLoad()) then
+        -- stg == store group (this is a hack)
+        if self.stg == other.stg then
+            return false, Locale.gettext("Can't tell if it's okay to move a load past a store, so I'm not going to let you!")
+        end
+    end
+    if self:isStore() and other:isStore() then
+        if self.stg == other.stg then
+            return false, Locale.gettext("Can't tell if it's okay to move a store past a store, so I'm not going to let you!")
+        end
     end
     return true
 end
+
+function Operation:isLoad()
+    return self.loads[self.op] ~=nil
+end
+
+function Operation:isStore()
+    return self.stores[self.op] ~=nil
+end
+
 
 function Operation:scoreboard(sc)
 

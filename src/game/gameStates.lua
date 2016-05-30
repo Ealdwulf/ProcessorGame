@@ -7,7 +7,6 @@ License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPLv2
 ]]--
 local GameManager = require "game.gameManager"
 local Sounds = require "system.sounds"
-local Locale = require "system.locale"
 local Message = require "game.ui.message"
 local Score = require "game.score"
 
@@ -57,13 +56,16 @@ end
 
 function GameStates:continue()
     self.state = self.STATE_INGAME
+    print("reload")
+    self.gameManager:load()
 end
 
 function GameStates:endLevel(won, loseText)
     self.state = self.STATE_WINLOSE
+    if not won then
+        Sounds.play("bad")
+    end
     self.score:endLevel(won, loseText)
-    print("reload")
-    self.gameManager:load()
 end
             
 

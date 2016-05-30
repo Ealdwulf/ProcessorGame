@@ -58,9 +58,9 @@ function Issue:tick()
         if pipeType == currPipe then
             dprint(pipeType, pipe:MoE(), waiting)
             if pipe:MoE() and not waiting then
-                dprint(ticks, pipeType, self.currOP.op)
                 pipe:setNextOp(self.currOP)
                 if self.currOP then
+                    print("issue: ", ticks, pipeType, self.currOP.string)
                     self.currOP:scoreboard(self.scb)
                     if not self.currOP:check(self.scb) then
                         Sounds.play("bad")
