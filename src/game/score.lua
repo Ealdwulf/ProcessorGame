@@ -20,7 +20,7 @@ function Score.create(message, num_levels)
     self.message = message
     self.level = 1
     self.points = 0
-    self.stallsLevel = 0
+    self.ticksLevel = 0
     self.stallsLoop = 1000000
     self.stallsLastLoop = 1000000
     self.text = love.graphics.newText(Layout.font, '')
@@ -29,12 +29,11 @@ function Score.create(message, num_levels)
 end
 
 function Score:load()
-    self.maxStalls, self.targetStalls = Levels.getData(self.level)
+    self.maxTime, self.targetStalls = Levels.getData(self.level)
 end
 function Score:update(stall, pc)
-    local won = false
+    self.ticksLevel = self.ticksLevel + 1
     if stall then
-        self.stallsLevel = self.stallsLevel + 1
         self.stallsLoop = self.stallsLoop + 1
     end
     if pc == 1 and not stall then
@@ -45,13 +44,13 @@ function Score:update(stall, pc)
         self.stallsLastLoop = self.stallsLoop
         self.stallsLoop = 0
     end
-    self.text:set("Level "..self.level..Locale.gettext(" Points: ")..self.points.. Locale.gettext(" Stalls: ")..self.stallsLevel..Locale.gettext(" Target: ")..self.targetStalls)
+    self.text:set("Level "..self.level..Locale.gettext(" Points: ")..self.points.. Locale.gettext(" Time: ")..self.ticksLevel..Locale.gettext(" Target: ")..self.targetStalls)
 
-    return false, self.stallsLevel <= self.maxStalls
+    return false, self.ticksLevel <= self.maxTime
 end
 function Score:endLevel(won, loseText)
     if won then
-        self.points = self.maxStalls - self.stallsLevel
+        self.points = self.maxTime - self.ticksLevel
         if self.level >= Levels.num then            
             self.message:set(Locale.gettext("You completed all the levels! Want to play again?"),"continue")
             self.level = 1
@@ -62,13 +61,13 @@ function Score:endLevel(won, loseText)
     else        
         self.message:set(loseText, "continue")        
     end
-    self.stallsLevel = 0
+    self.ticksLevel = 0
 end        
 function Score:draw()
     local ly = Layout.score
     g.setColor(ly.colour)
     g.draw(self.text, ly.text.x, ly.text.y)
     g.setColor(ly.stall.colour)
-    g.rectangle("fill", ly.stall.x, ly.stall.y, ly.stall.width, ly.stall.height * (self.maxStalls-self.stallsLevel)/self.maxStalls)
+    g.rectangle("fill", ly.stall.x, ly.stall.y, ly.stall.width, ly.stall.height * (self.maxTime-self.ticksLevel)/self.maxTime)
 end
 return Score
